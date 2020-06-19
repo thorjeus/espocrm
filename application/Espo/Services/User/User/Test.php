@@ -27,51 +27,9 @@
  * these Appropriate Legal Notices must retain the display of the "EspoCRM" word.
  ************************************************************************/
 
-namespace Espo\Core;
+namespace Espo\Services\User\User\Test;
 
-use Espo\Core\Exceptions\Error;
-
-use Espo\Core\Utils\ClassFinder;
-use Espo\Core\InjectableFactory;
-
-class ServiceFactory
+class Test extends Espo\Services\Record
 {
-    protected $classFinder;
-    protected $injectableFactory;
 
-    public function __construct(ClassFinder $classFinder, InjectableFactory $injectableFactory)
-    {
-        $this->classFinder = $classFinder;
-        $this->injectableFactory = $injectableFactory;
-    }
-
-    protected function getClassName(string $name)
-    {
-        return $this->classFinder->find('Services', $name, true);
-    }
-
-    public function checkExists(string $name) : bool
-    {
-        $className = $this->getClassName($name);
-        if (!$className) {
-            return false;
-        }
-        return true;
-    }
-
-    public function create(string $name) : object
-    {
-        $className = $this->getClassName($name);
-        if (!$className) {
-            throw new Error("Service '{$name}' was not found.");
-        }
-
-        $obj = $this->injectableFactory->create($className);
-
-        if (method_exists($obj, 'prepare')) {
-            $obj->prepare();
-        }
-
-        return $obj;
-    }
 }
